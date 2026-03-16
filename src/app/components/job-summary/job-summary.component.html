@@ -1,0 +1,49 @@
+<div class="summary-cards">
+  <mat-card class="summary-card">
+    <mat-card-content>
+      <div class="card-content">
+        <mat-icon>work</mat-icon>
+        <div>
+          <h3>Total Jobs</h3>
+          <p class="count">{{ totalJobs$ | async }}</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="summary-card running">
+    <mat-card-content>
+      <div class="card-content">
+        <mat-icon>play_arrow</mat-icon>
+        <div>
+          <h3>Running Jobs</h3>
+          <p class="count">{{ runningJobs$ | async }}</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="summary-card completed">
+    <mat-card-content>
+      <div class="card-content">
+        <mat-icon>check_circle</mat-icon>
+        <div>
+          <h3>Completed Jobs</h3>
+          <p class="count">{{ completedJobs$ | async }}</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="summary-card failed">
+    <mat-card-content>
+      <div class="card-content">
+        <mat-icon>error</mat-icon>
+        <div>
+          <h3>Failed Jobs</h3>
+          <p class="count">{{ failedJobs$ | async }}</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

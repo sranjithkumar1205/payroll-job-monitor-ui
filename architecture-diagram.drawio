@@ -1,0 +1,164 @@
+<mxfile host="app.diagrams.net" modified="2026-03-16T12:00:00.000Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36" etag="hash" version="21.2.2" type="device">
+  <diagram id="diagram1" name="Payroll Job Monitor Architecture">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        
+        <!-- Background -->
+        <mxCell id="background" value="" style="fillColor=#0a0a0a;strokeColor=#00ffff;" parent="1" vertex="1">
+          <mxGeometry x="0" y="0" width="1169" height="827" as="geometry"/>
+        </mxCell>
+        
+        <!-- UI Layer Container -->
+        <mxCell id="ui_layer" value="User Interface Layer" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#1a1a1a;strokeColor=#00ffff;fontColor=#00ffff;horizontalStack=0;" parent="1" vertex="1">
+          <mxGeometry x="50" y="50" width="300" height="200" as="geometry"/>
+        </mxCell>
+        
+        <!-- AppComponent -->
+        <mxCell id="app_component" value="AppComponent" style="shape=rect;fillColor=#2a2a2a;strokeColor=#ff00ff;fontColor=#ff00ff;rounded=1;" parent="ui_layer" vertex="1">
+          <mxGeometry x="0" y="26" width="300" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- JobDashboardComponent -->
+        <mxCell id="dashboard_component" value="JobDashboardComponent" style="shape=rect;fillColor=#2a2a2a;strokeColor=#00ff00;fontColor=#00ff00;rounded=1;" parent="ui_layer" vertex="1">
+          <mxGeometry x="0" y="66" width="300" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- JobSummaryComponent -->
+        <mxCell id="summary_component" value="JobSummaryComponent" style="shape=rect;fillColor=#2a2a2a;strokeColor=#ffff00;fontColor=#ffff00;rounded=1;" parent="ui_layer" vertex="1">
+          <mxGeometry x="0" y="106" width="300" height="30" as="geometry"/>
+        </mxCell>
+        
+        <!-- JobTableComponent -->
+        <mxCell id="table_component" value="JobTableComponent" style="shape=rect;fillColor=#2a2a2a;strokeColor=#ff6600;fontColor=#ff6600;rounded=1;" parent="ui_layer" vertex="1">
+          <mxGeometry x="0" y="136" width="300" height="30" as="geometry"/>
+        </mxCell>
+        
+        <!-- JobDetailsComponent -->
+        <mxCell id="details_component" value="JobDetailsComponent (Dialog)" style="shape=rect;fillColor=#2a2a2a;strokeColor=#6600ff;fontColor=#6600ff;rounded=1;" parent="ui_layer" vertex="1">
+          <mxGeometry x="0" y="166" width="300" height="30" as="geometry"/>
+        </mxCell>
+        
+        <!-- Service Layer Container -->
+        <mxCell id="service_layer" value="Service Layer" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#1a1a1a;strokeColor=#00ffff;fontColor=#00ffff;horizontalStack=0;" parent="1" vertex="1">
+          <mxGeometry x="400" y="150" width="250" height="80" as="geometry"/>
+        </mxCell>
+        
+        <!-- JobService -->
+        <mxCell id="job_service" value="JobService" style="shape=rect;fillColor=#2a2a2a;strokeColor=#00ffff;fontColor=#00ffff;rounded=1;" parent="service_layer" vertex="1">
+          <mxGeometry x="0" y="26" width="250" height="50" as="geometry"/>
+        </mxCell>
+        
+        <!-- Data Layer Container -->
+        <mxCell id="data_layer" value="Data Layer" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#1a1a1a;strokeColor=#00ffff;fontColor=#00ffff;horizontalStack=0;" parent="1" vertex="1">
+          <mxGeometry x="700" y="100" width="250" height="120" as="geometry"/>
+        </mxCell>
+        
+        <!-- Mock Jobs Data -->
+        <mxCell id="mock_data" value="Mock Jobs Data" style="shape=rect;fillColor=#2a2a2a;strokeColor=#00ff00;fontColor=#00ff00;rounded=1;" parent="data_layer" vertex="1">
+          <mxGeometry x="0" y="26" width="250" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- Future API Integration -->
+        <mxCell id="api_integration" value="Future API Integration" style="shape=rect;fillColor=#2a2a2a;strokeColor=#ff00ff;fontColor=#ff00ff;rounded=1;dashed=1;" parent="data_layer" vertex="1">
+          <mxGeometry x="0" y="66" width="250" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- External Systems Container -->
+        <mxCell id="external_layer" value="External Systems" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#1a1a1a;strokeColor=#00ffff;fontColor=#00ffff;horizontalStack=0;" parent="1" vertex="1">
+          <mxGeometry x="1000" y="150" width="150" height="120" as="geometry"/>
+        </mxCell>
+        
+        <!-- Payroll Processing System -->
+        <mxCell id="payroll_system" value="Payroll Processing&#xa;System" style="shape=cylinder;fillColor=#2a2a2a;strokeColor=#ffff00;fontColor=#ffff00;" parent="external_layer" vertex="1">
+          <mxGeometry x="0" y="26" width="150" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- Database -->
+        <mxCell id="database" value="Database" style="shape=cylinder;fillColor=#2a2a2a;strokeColor=#ff6600;fontColor=#ff6600;" parent="external_layer" vertex="1">
+          <mxGeometry x="0" y="66" width="150" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- Connections -->
+        <!-- AppComponent to JobDashboardComponent -->
+        <mxCell id="edge1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#00ffff;strokeWidth=2;" parent="1" source="app_component" target="dashboard_component" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- JobDashboardComponent to JobSummaryComponent -->
+        <mxCell id="edge2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#00ff00;strokeWidth=2;" parent="1" source="dashboard_component" target="summary_component" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- JobDashboardComponent to JobTableComponent -->
+        <mxCell id="edge3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#00ff00;strokeWidth=2;" parent="1" source="dashboard_component" target="table_component" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- JobTableComponent to JobDetailsComponent -->
+        <mxCell id="edge4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#ff6600;strokeWidth=2;" parent="1" source="table_component" target="details_component" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Components to JobService -->
+        <mxCell id="edge5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#00ffff;strokeWidth=2;" parent="1" source="summary_component" target="job_service" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="edge6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#00ffff;strokeWidth=2;" parent="1" source="table_component" target="job_service" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="edge7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#00ffff;strokeWidth=2;" parent="1" source="details_component" target="job_service" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- JobService to Data Layer -->
+        <mxCell id="edge8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#00ff00;strokeWidth=2;" parent="1" source="job_service" target="mock_data" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="edge9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#ff00ff;strokeWidth=2;dashed=1;" parent="1" source="job_service" target="api_integration" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- API Integration to External Systems -->
+        <mxCell id="edge10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#ffff00;strokeWidth=2;dashed=1;" parent="1" source="api_integration" target="payroll_system" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="edge11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#ff6600;strokeWidth=2;dashed=1;" parent="1" source="payroll_system" target="database" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Title -->
+        <mxCell id="title" value="Payroll Job Monitor UI - System Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontColor=#00ffff;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="400" y="10" width="400" height="30" as="geometry"/>
+        </mxCell>
+        
+        <!-- Legend -->
+        <mxCell id="legend_title" value="Legend" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontColor=#00ffff;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="50" y="280" width="100" height="20" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="legend_solid" value="Current Implementation" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#00ffff;" parent="1" vertex="1">
+          <mxGeometry x="50" y="300" width="150" height="20" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="legend_solid_line" style="shape=line;strokeColor=#00ffff;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry x="200" y="310" width="50" height="0" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="legend_dashed" value="Future Implementation" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#ff00ff;" parent="1" vertex="1">
+          <mxGeometry x="50" y="320" width="150" height="20" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="legend_dashed_line" style="shape=line;strokeColor=#ff00ff;strokeWidth=2;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="200" y="330" width="50" height="0" as="geometry"/>
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

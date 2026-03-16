@@ -1,1 +1,31 @@
-/* You can add global styles to this file, and also import other style files */
+/*
+ * Global application styles.
+ *
+ * This file imports the Angular Material theme + icons and provides basic
+ * global layout styling for the dashboard.
+ */
+
+@import "@angular/material/prebuilt-themes/indigo-pink.css";
+
+/* Material icons */
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+/* Roboto font (Material Design recommended font) */
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap');
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #f5f5f5;
+}
+
+/* Ensure router-outlet & host elements fill the full viewport */
+:host {
+  display: block;
+  height: 100%;
+}
+

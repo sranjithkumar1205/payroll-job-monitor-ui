@@ -1,0 +1,34 @@
+.table-container {
+  .filters {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    align-items: center;
+
+    mat-form-field {
+      flex: 1;
+      max-width: 300px;
+    }
+  }
+
+  table {
+    width: 100%;
+  }
+
+  .mat-mdc-chip {
+    min-height: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    .filters {
+      flex-direction: column;
+      align-items: stretch;
+
+      mat-form-field {
+        max-width: none;
+      }
+    }
+  }
+}

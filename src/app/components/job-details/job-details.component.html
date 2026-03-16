@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>Job Details</h2>
+<mat-dialog-content>
+  <div class="detail-item">
+    <strong>Job Name:</strong> {{ job.jobName }}
+  </div>
+  <div class="detail-item">
+    <strong>Status:</strong>
+    <mat-chip [color]="getStatusColor(job.status)" selected>
+      {{ job.status }}
+    </mat-chip>
+  </div>
+  <div class="detail-item">
+    <strong>Start Time:</strong> {{ job.startTime | date:'medium' }}
+  </div>
+  <div class="detail-item">
+    <strong>End Time:</strong> {{ job.endTime ? (job.endTime | date:'medium') : 'N/A' }}
+  </div>
+  <div class="detail-item">
+    <strong>Duration:</strong> {{ formatDuration(job.duration) }}
+  </div>
+  <div class="detail-item" *ngIf="job.errorMessage">
+    <strong>Error Message:</strong> {{ job.errorMessage }}
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>
