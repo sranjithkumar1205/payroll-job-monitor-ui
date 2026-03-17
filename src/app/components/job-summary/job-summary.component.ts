@@ -3,8 +3,8 @@
  *
  * Uses the JobService observable stream and derives counts using RxJS mapping.
  */
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { Observable, map } from 'rxjs';
@@ -15,12 +15,12 @@ import { Job } from '../../models/job.model';
   selector: 'app-job-summary',
   standalone: true,
   imports: [
-    CommonModule,
+    AsyncPipe,
     MatCardModule,
-    MatIconModule
-  ],
+    MatIconModule],
   templateUrl: './job-summary.component.html',
-  styleUrls: ['./job-summary.component.scss']
+  styleUrls: ['./job-summary.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class JobSummaryComponent implements OnInit {
   totalJobs$!: Observable<number>;
@@ -28,7 +28,7 @@ export class JobSummaryComponent implements OnInit {
   completedJobs$!: Observable<number>;
   failedJobs$!: Observable<number>;
 
-  constructor(private jobService: JobService) { }
+  private jobService = inject(JobService);
 
   ngOnInit() {
     const jobs$ = this.jobService.getJobs();

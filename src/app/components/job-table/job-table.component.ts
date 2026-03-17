@@ -3,8 +3,7 @@
  *
  * Includes search + status filter and opens a details dialog when a row is selected.
  */
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,7 +13,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
-import { Observable, combineLatest, map, startWith } from 'rxjs';
+import { DatePipe } from '@angular/common';
+import { combineLatest, map, startWith } from 'rxjs';
 import { JobService } from '../../services/job.service';
 import { Job } from '../../models/job.model';
 import { JobDetailsComponent } from '../job-details/job-details.component';
@@ -23,7 +23,7 @@ import { JobDetailsComponent } from '../job-details/job-details.component';
   selector: 'app-job-table',
   standalone: true,
   imports: [
-    CommonModule,
+    DatePipe,
     MatTableModule,
     MatChipsModule,
     MatButtonModule,
@@ -35,7 +35,8 @@ import { JobDetailsComponent } from '../job-details/job-details.component';
     ReactiveFormsModule
   ],
   templateUrl: './job-table.component.html',
-  styleUrls: ['./job-table.component.scss']
+  styleUrls: ['./job-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class JobTableComponent implements OnInit {
   // Columns displayed in the Material table
@@ -53,10 +54,8 @@ export class JobTableComponent implements OnInit {
     { value: 'FAILED', label: 'Failed' }
   ];
 
-  constructor(
-    private jobService: JobService,
-    private dialog: MatDialog
-  ) { }
+  private jobService = inject(JobService);
+  private dialog = inject(MatDialog);
 
   ngOnInit() {
     // Combine the latest values from the job stream and the filter controls

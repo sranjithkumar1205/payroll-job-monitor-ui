@@ -1,5 +1,5 @@
-import { Component, Inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -14,20 +14,21 @@ import { Job } from '../../models/job.model';
   selector: 'app-job-details',
   standalone: true,
   imports: [
-    CommonModule,
+    DatePipe,
     MatDialogModule,
     MatButtonModule,
     MatChipsModule
   ],
   templateUrl: './job-details.component.html',
-  styleUrls: ['./job-details.component.scss']
+  styleUrls: ['./job-details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class JobDetailsComponent {
   /**
    * Job details are injected via MAT_DIALOG_DATA.
    * This makes the component reusable for any job details dialog.
    */
-  constructor(@Inject(MAT_DIALOG_DATA) public job: Job) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public job: Job) { }
 
   /**
    * Convert a job status into a Material palette color.

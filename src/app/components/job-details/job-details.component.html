@@ -18,9 +18,11 @@
   <div class="detail-item">
     <strong>Duration:</strong> {{ formatDuration(job.duration) }}
   </div>
-  <div class="detail-item" *ngIf="job.errorMessage">
-    <strong>Error Message:</strong> {{ job.errorMessage }}
-  </div>
+  @if (job.errorMessage) {
+    <div class="detail-item">
+      <strong>Error Message:</strong> {{ job.errorMessage }}
+    </div>
+  }
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Close</button>
