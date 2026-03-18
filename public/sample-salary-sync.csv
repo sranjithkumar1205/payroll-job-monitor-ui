@@ -1,0 +1,11 @@
+EmployeeID,SystemA_Salary,SystemB_Salary,LastSyncDate,Status,Notes
+EMP001,95000,95000,2026-03-01,Synced,No changes needed
+EMP002,75000,75000,2026-03-01,Synced,No changes needed
+EMP003,85000,85000,2026-03-01,Synced,No changes needed
+EMP004,65000,65000,2026-03-01,Synced,No changes needed
+EMP005,80000,80500,2026-02-15,Mismatch,Needs sync - SystemB higher by 500
+EMP006,70000,70000,2026-03-01,Synced,No changes needed
+EMP007,78000,78000,2026-03-01,Synced,No changes needed
+EMP008,60000,59500,2026-02-20,Mismatch,Needs sync - SystemA higher by 500
+EMP009,92000,92000,2026-03-01,Synced,No changes needed
+EMP010,120000,120000,2026-03-01,Synced,No changes needed

@@ -12,3 +12,25 @@ export interface Job {
   duration?: number; // in milliseconds
   errorMessage?: string;
 }
+
+/**
+ * Represents the trigger/execution result of a manual job trigger.
+ */
+export interface JobExecution {
+  id: string;
+  jobName: string;
+  status: 'STARTING' | 'RUNNING' | 'COMPLETED' | 'FAILED';
+  startTime: Date;
+  endTime?: Date;
+  message?: string;
+  fileName?: string;
+}
+
+/**
+ * Available jobs that can be manually triggered.
+ */
+export interface JobTemplate {
+  id: string;
+  name: string;
+  description: string;
+}

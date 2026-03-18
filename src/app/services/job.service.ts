@@ -1,13 +1,13 @@
 /**
- * Service responsible for retrieving job data.
+ * Service responsible for retrieving job data and triggering manual jobs.
  *
  * Currently uses mock data, but is designed to be replaced with real HTTP
  * API calls in a future iteration.
  */
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, interval, startWith, switchMap, map } from 'rxjs';
-import { Job } from '../models/job.model';
-import { mockJobs } from '../mocks/mock-jobs';
+import { BehaviorSubject, Observable, of, interval, startWith, switchMap, map, delay, tap, concat } from 'rxjs';
+import { Job, JobExecution } from '../models/job.model';
+import { mockJobs, jobTemplates } from '../mocks/mock-jobs';
 
 @Injectable({
   providedIn: 'root'
@@ -55,5 +55,61 @@ export class JobService {
   private fetchJobs(): Observable<Job[]> {
     // Mock data for now.
     return of(mockJobs);
+  }
+
+  /**
+   * Returns available job templates for manual triggering.
+   */
+  getJobTemplates(): Observable<typeof jobTemplates> {
+    return of(jobTemplates);
+  }
+
+  /**
+   * Triggers a job execution with optional file upload.
+   * Simulates API call: POST /api/jobs/trigger
+   * 
+   * @param jobName - Name of the job to trigger
+   * @param file - Optional file to process
+   * @returns Observable<JobExecution> - Job execution status updates
+   */
+  triggerJob(jobName: string, file?: File): Observable<JobExecution> {
+    // Phase 1: Initial state
+    const startExecution: JobExecution = {
+      id: Date.now().toString(),
+      jobName,
+      status: 'STARTING',
+      startTime: new Date(),
+      fileName: file?.name,
+      message: 'Initializing job execution...'
+    };
+
+    // Phase 2: Running state
+    const runningExecution: JobExecution = {
+      ...startExecution,
+      status: 'RUNNING',
+      message: file
+        ? `Processing file: ${file.name}...`
+        : 'Executing job without file...'
+    };
+
+    // Phase 3: Completion state (80% success rate)
+    const isSuccess = Math.random() > 0.2;
+    const completedExecution: JobExecution = {
+      ...runningExecution,
+      status: isSuccess ? 'COMPLETED' : 'FAILED',
+      endTime: new Date(),
+      message: isSuccess
+        ? file
+          ? `Successfully processed ${file.name}`
+          : 'Job completed successfully'
+        : 'Job execution failed: Service timeout'
+    };
+
+    // Emit three times to show progress, then emit final result
+    return concat(
+      of(startExecution).pipe(delay(800)),
+      of(runningExecution).pipe(delay(2000)),
+      of(completedExecution).pipe(delay(500))
+    );
   }
 }

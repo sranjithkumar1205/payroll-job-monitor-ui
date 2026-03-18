@@ -1,0 +1,79 @@
+<mat-toolbar color="primary" class="toolbar">
+  <span class="toolbar-title">Payroll Job Manual Trigger</span>
+</mat-toolbar>
+
+<main class="main-content">
+  <mat-card class="trigger-card">
+    <mat-card-header>
+      <mat-card-title>Job Execution Form</mat-card-title>
+      <mat-card-subtitle>Select a job and optionally upload a file to trigger execution</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="form" class="form-container">
+        <!-- Job Selection Dropdown -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Select Job</mat-label>
+          <mat-select formControlName="jobName">
+            @for (template of jobTemplates(); track template.id) {
+            <mat-option [value]="template.name">
+              {{ template.name }} - {{ template.description }}
+            </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <!-- File Upload Section -->
+        <div class="file-upload-section">
+          <label class="file-upload-label">Upload File (Optional)</label>
+          <div class="file-upload-container">
+            <button type="button" mat-raised-button color="accent" (click)="triggerFileInput()"
+              [disabled]="isExecuting()">
+              <mat-icon>cloud_upload</mat-icon>
+              Choose File
+            </button>
+            @if (selectedFileName()) {
+            <span class="file-name">{{ selectedFileName() }}</span>
+            } @else {
+            <span class="file-hint">No file selected</span>
+            }
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="button-group">
+          <button type="button" mat-raised-button color="primary" (click)="runJob()"
+            [disabled]="form.invalid || isExecuting()" class="run-button">
+            <span class="button-content">
+              @if (isExecuting()) {
+              <div class="spinner-container">
+                <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+              </div>
+              <span class="button-text">Running...</span>
+              } @else {
+              <mat-icon class="button-icon">play_circle_filled</mat-icon>
+              <span class="button-text">Run Job</span>
+              }
+            </span>
+          </button>
+
+          <button type="button" mat-stroked-button (click)="clearForm()" [disabled]="isExecuting()"
+            class="clear-button">
+            <mat-icon class="button-icon">clear</mat-icon>
+            <span class="button-text">Clear</span>
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Result Section -->
+  @if (lastExecution()) {
+  <app-job-result [execution]="lastExecution()!"></app-job-result>
+  }
+
+  <!-- History Table -->
+  @if (executionHistory().length > 0) {
+  <app-job-history [executions]="executionHistory()"></app-job-history>
+  }
+</main>

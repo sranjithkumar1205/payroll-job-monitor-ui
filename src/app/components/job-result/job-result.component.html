@@ -1,0 +1,61 @@
+<mat-card class="result-card">
+  <mat-card-header>
+    <mat-card-title>Execution Result</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content class="result-content">
+    <div class="result-row">
+      <span class="result-label">Job Name:</span>
+      <span class="result-value">{{ execution().jobName }}</span>
+    </div>
+
+    <div class="result-row">
+      <span class="result-label">Status:</span>
+      <mat-chip [style.background-color]="getStatusColor()" class="status-chip">
+        <span class="status-content">
+          @switch (execution().status) {
+          @case ('RUNNING') {
+          <mat-icon>hourglass_empty</mat-icon>
+          }
+          @case ('COMPLETED') {
+          <mat-icon>check_circle</mat-icon>
+          }
+          @case ('FAILED') {
+          <mat-icon>error</mat-icon>
+          }
+          @default {
+          <mat-icon>help</mat-icon>
+          }
+          }
+          <span>{{ execution().status }}</span>
+        </span>
+      </mat-chip>
+    </div>
+
+    <div class="result-row">
+      <span class="result-label">Start Time:</span>
+      <span class="result-value">{{ execution().startTime | date: 'medium' }}</span>
+    </div>
+
+    @if (execution().endTime) {
+    <div class="result-row">
+      <span class="result-label">End Time:</span>
+      <span class="result-value">{{ execution().endTime | date: 'medium' }}</span>
+    </div>
+    }
+
+    @if (execution().fileName) {
+    <div class="result-row">
+      <span class="result-label">File:</span>
+      <span class="result-value">{{ execution().fileName }}</span>
+    </div>
+    }
+
+    @if (execution().message) {
+    <div class="result-row">
+      <span class="result-label">Message:</span>
+      <span class="result-value">{{ execution().message }}</span>
+    </div>
+    }
+  </mat-card-content>
+</mat-card>

@@ -1,4 +1,4 @@
-import { Job } from '../models/job.model';
+import { Job, JobTemplate } from '../models/job.model';
 
 /**
  * Fixed mock dataset used by the JobService while this project is not yet connected
@@ -42,4 +42,35 @@ export const mockJobs: Job[] = [
     status: 'RUNNING',
     startTime: new Date('2026-03-16T11:00:00'),
   },
+];
+
+/**
+ * Job templates available for manual triggering.
+ */
+export const jobTemplates: JobTemplate[] = [
+  {
+    id: '1',
+    name: 'Payroll Job',
+    description: 'Calculate and process payroll for all employees'
+  },
+  {
+    id: '2',
+    name: 'Employee Import',
+    description: 'Import employee data from external source'
+  },
+  {
+    id: '3',
+    name: 'Salary Sync',
+    description: 'Synchronize salary information across systems'
+  },
+  {
+    id: '4',
+    name: 'Tax Report',
+    description: 'Generate monthly tax reports'
+  },
+  {
+    id: '5',
+    name: 'Compliance Check',
+    description: 'Run compliance validation checks'
+  }
 ];

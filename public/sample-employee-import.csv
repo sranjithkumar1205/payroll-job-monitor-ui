@@ -1,0 +1,11 @@
+EmployeeID,FirstName,LastName,Email,Department,Position,Salary,StartDate,Status
+EMP001,John,Smith,john.smith@company.com,Engineering,Senior Developer,95000,2020-03-15,Active
+EMP002,Sarah,Johnson,sarah.johnson@company.com,Engineering,Developer,75000,2021-06-20,Active
+EMP003,Michael,Brown,michael.brown@company.com,Finance,Finance Manager,85000,2019-01-10,Active
+EMP004,Emily,Davis,emily.davis@company.com,HR,HR Specialist,65000,2022-02-14,Active
+EMP005,Robert,Wilson,robert.wilson@company.com,Sales,Sales Manager,80000,2018-08-05,Active
+EMP006,Jessica,Martinez,jessica.martinez@company.com,Engineering,QA Engineer,70000,2021-09-01,Active
+EMP007,David,Anderson,david.anderson@company.com,Marketing,Marketing Manager,78000,2020-11-12,Active
+EMP008,Lisa,Taylor,lisa.taylor@company.com,Finance,Accountant,60000,2022-05-20,Active
+EMP009,James,Thomas,james.thomas@company.com,Engineering,DevOps Engineer,92000,2019-07-15,Active
+EMP010,Amanda,Jackson,amanda.jackson@company.com,HR,HR Director,120000,2015-02-01,Active

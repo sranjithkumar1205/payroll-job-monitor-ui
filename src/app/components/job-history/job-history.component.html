@@ -1,0 +1,67 @@
+<mat-card class="history-card">
+  <mat-card-header>
+    <mat-card-title>Execution History</mat-card-title>
+    <mat-card-subtitle>Recent job executions</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="table-container">
+      <table mat-table [dataSource]="executions()" class="history-table">
+        <!-- Job Name Column -->
+        <ng-container matColumnDef="jobName">
+          <th mat-header-cell *matHeaderCellDef>Job Name</th>
+          <td mat-cell *matCellDef="let element">{{ element.jobName }}</td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let element">
+            <mat-chip [style.background-color]="getStatusColor(element.status)" class="status-chip">
+              <span class="status-content">
+                @switch (element.status) {
+                @case ('RUNNING') {
+                <mat-icon>hourglass_empty</mat-icon>
+                }
+                @case ('COMPLETED') {
+                <mat-icon>check_circle</mat-icon>
+                }
+                @case ('FAILED') {
+                <mat-icon>error</mat-icon>
+                }
+                @default {
+                <mat-icon>help</mat-icon>
+                }
+                }
+                <span>{{ element.status }}</span>
+              </span>
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <!-- Start Time Column -->
+        <ng-container matColumnDef="startTime">
+          <th mat-header-cell *matHeaderCellDef>Start Time</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.startTime | date: 'short' }}
+          </td>
+        </ng-container>
+
+        <!-- End Time Column -->
+        <ng-container matColumnDef="endTime">
+          <th mat-header-cell *matHeaderCellDef>End Time</th>
+          <td mat-cell *matCellDef="let element">
+            @if (element.endTime) {
+            {{ element.endTime | date: 'short' }}
+            } @else {
+            <span class="no-data">-</span>
+            }
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>
