@@ -1,0 +1,30 @@
+<mat-toolbar color="primary" class="app-toolbar">
+  <button mat-icon-button (click)="toggleSidenav()" class="toggle-button">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span class="app-title">Payroll Job Monitor</span>
+</mat-toolbar>
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav [opened]="sidenavOpen()" [mode]="'over'" class="sidenav">
+    <mat-nav-list class="nav-list">
+      <h2 matSubheader class="nav-header">Navigation</h2>
+
+      <mat-list-item (click)="navigateTo('/trigger')" class="nav-item">
+        <mat-icon matListItemIcon>play_circle_filled</mat-icon>
+        <span matListItemTitle>Job Execution Form</span>
+        <span matListItemLine>Trigger batch jobs manually</span>
+      </mat-list-item>
+
+      <mat-list-item (click)="navigateTo('/dashboard')" class="nav-item">
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        <span matListItemTitle>Dashboard</span>
+        <span matListItemLine>View job summary & history</span>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="sidenav-content">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
