@@ -1,89 +1,159 @@
+/**
+ * App Toolbar Styling
+ * The header bar at the top of the application
+ */
 .app-toolbar {
+  // Flexbox layout for horizontal alignment
   display: flex;
   align-items: center;
   gap: 1rem;
 
+  // Style for the menu toggle button
   .toggle-button {
     margin-right: 0.5rem;
   }
 
+  // Title text styling
   .app-title {
     font-size: 1.25rem;
     font-weight: 500;
   }
 }
 
+/**
+ * Main Sidenav Container
+ * Holds the sidebar and main content area
+ * Height = 100vh (full screen) minus toolbar height
+ */
 .sidenav-container {
-  height: calc(100vh - 64px); // Subtract toolbar height
+  // Full height minus toolbar (64px is Material toolbar default height)
+  height: calc(100vh - 64px);
+  // Flex layout: sidebar + content area side by side
   display: flex;
 
+  /**
+   * Sidebar Navigation Panel
+   */
   .sidenav {
+    // Fixed width for sidebar
     width: 280px;
+    // Light gray background
     background-color: #f5f5f5;
+    // Subtle border on the right side
     border-right: 1px solid #e0e0e0;
 
+    /**
+     * Navigation menu list container
+     */
     .nav-list {
       padding-top: 1rem;
 
+      /**
+       * Section header (e.g., "Navigation")
+       */
       .nav-header {
         padding: 1rem 1.5rem 0.5rem;
         font-size: 0.875rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        // Semi-transparent dark text
         color: rgba(0, 0, 0, 0.6);
       }
 
+      /**
+       * Navigation items (links to different routes)
+       */
       .nav-item {
         margin: 0.25rem 0.5rem;
+        // Rounded corners for modern look
         border-radius: 4px;
+        // Smooth background color transition on hover
         transition: background-color 0.2s ease;
+        // Show pointer cursor on hover
         cursor: pointer;
 
+        /**
+         * Hover state: light indigo background
+         * User knows they can click this item
+         */
         &:hover {
+          // Semi-transparent indigo (Material primary color)
           background-color: rgba(63, 81, 181, 0.1);
         }
 
+        /**
+         * Active state: darker indigo + bold text
+         * Shows which page user is currently on
+         */
         &.active {
           background-color: rgba(63, 81, 181, 0.15);
           font-weight: 500;
         }
 
+        /**
+         * Icon styling for navigation items
+         */
         mat-icon {
-          color: #3f51b5; // Material indigo
+          // Material indigo color matching app theme
+          color: #3f51b5;
           margin-right: 1rem;
         }
       }
     }
   }
 
+  /**
+   * Main content area where route components render
+   */
   .sidenav-content {
+    // Take remaining space in flex container
     flex: 1;
+    // Scroll vertically if content overflow
     overflow-y: auto;
+    // Light background for content area
     background-color: #fafafa;
   }
 }
 
-// Responsive: collapse sidenav on small screens
+/**
+ * RESPONSIVE DESIGN
+ * Adapts layout for different screen sizes
+ */
+
+/**
+ * Tablet/Medium screens (768px and below)
+ * Narrows the sidebar slightly to save space
+ */
 @media (max-width: 768px) {
   .sidenav-container {
     .sidenav {
+      // Reduce sidebar width on tablets
       width: 256px;
     }
   }
 }
 
+/**
+ * Mobile screens (600px and below)
+ * Significantly changes layout for phones
+ */
 @media (max-width: 600px) {
   .sidenav-container {
-    height: calc(100vh - 56px); // Smaller toolbar height on mobile
+    // Use smaller toolbar height (56px vs 64px) on mobile
+    height: calc(100vh - 56px);
 
     .sidenav {
+      // Sidebar takes full width on mobile (overlay mode)
       width: 100%;
+      // Position fixed so it appears above content
       position: fixed;
+      // High z-index ensures sidebar appears on top of content
       z-index: 1100;
     }
 
     .sidenav-content {
+      // Remove top padding since fixed sidebar covers it
       padding-top: 0;
     }
   }
