@@ -24,6 +24,8 @@ import { JobService } from '../../services/job.service';
 import { JobResultComponent } from '../job-result/job-result.component';
 import { JobHistoryComponent } from '../job-history/job-history.component';
 import { JobExecution } from '../../models/job.model';
+
+// Import constants and enums for type-safe status values and app configuration
 import { APP_CONSTANTS, JobExecutionStatus } from '../../models/constants';
 
 interface JobTemplate {
@@ -116,6 +118,7 @@ export class JobTriggerComponent {
       next: (execution) => {
         this.lastExecution.set(execution);
         console.log('execution', execution)
+        // Use JobExecutionStatus enum for type-safe status comparison instead of hardcoded strings
         if (execution.status === JobExecutionStatus.COMPLETED || execution.status === JobExecutionStatus.FAILED) {
           const history = this.executionHistory();
           history.unshift(execution);
