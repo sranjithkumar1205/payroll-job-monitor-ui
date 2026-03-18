@@ -2,8 +2,9 @@
 import { Component, OnInit, effect, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { inject, signal } from '@angular/core';
+import { filter } from 'rxjs/operators';
 
 // Angular Material imports for sidenav, toolbar, and navigation
 import { MatSidenavModule, MatSidenav } from '@angular/material/sidenav';
@@ -68,6 +69,12 @@ export class AppShellComponent implements OnInit {
   sidenavOpen = signal(true);
 
   /**
+   * Dynamically displays the current page title based on active route
+   * Updates automatically when navigation occurs
+   */
+  pageTitle = signal('Payroll Job Monitor');
+
+  /**
    * Constructor - runs effect to monitor sidenav state changes
    * Uses Angular's effect() for side effects on signal changes
    */
@@ -94,7 +101,7 @@ export class AppShellComponent implements OnInit {
       .subscribe(result => {
         // result.matches = true if screen is mobile size
         this.isMobile.set(result.matches);
-        
+
         // Automatically open/close sidenav based on screen size
         if (result.matches) {
           // Mobile: start with sidenav closed
@@ -102,6 +109,20 @@ export class AppShellComponent implements OnInit {
         } else {
           // Desktop: start with sidenav open
           this.sidenavOpen.set(true);
+        }
+      });
+
+    // Subscribe to router navigation events to update page title
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        const url = event.url;
+        if (url.includes('/trigger')) {
+          this.pageTitle.set('Job Execution Form');
+        } else if (url.includes('/dashboard')) {
+          this.pageTitle.set('Dashboard');
+        } else {
+          this.pageTitle.set('Payroll Job Monitor');
         }
       });
   }
@@ -114,7 +135,7 @@ export class AppShellComponent implements OnInit {
   navigateTo(route: string) {
     // Navigate to the selected route
     this.router.navigate([route]);
-    
+
     // Close sidenav after navigation (better UX on mobile)
     // Sidenav can still be open on desktop for continuous navigation
     if (this.sidenav) {

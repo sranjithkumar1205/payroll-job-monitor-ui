@@ -5,8 +5,8 @@
     <!-- Material icon: hamburger menu -->
     <mat-icon>menu</mat-icon>
   </button>
-  <!-- Application title -->
-  <span class="app-title">Payroll Job Monitor</span>
+  <!-- Application title - dynamically updates based on current route -->
+  <span class="app-title">{{ pageTitle() }}</span>
 </mat-toolbar>
 
 <!-- Main sidenav container that holds sidebar + main content -->
