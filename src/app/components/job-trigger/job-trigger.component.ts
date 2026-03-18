@@ -24,6 +24,7 @@ import { JobService } from '../../services/job.service';
 import { JobResultComponent } from '../job-result/job-result.component';
 import { JobHistoryComponent } from '../job-history/job-history.component';
 import { JobExecution } from '../../models/job.model';
+import { APP_CONSTANTS, JobExecutionStatus } from '../../models/constants';
 
 interface JobTemplate {
   id: string;
@@ -116,7 +117,7 @@ export class JobTriggerComponent {
         this.lastExecution.set(execution);
         console.log('execution', execution)
         // Only add to history when execution is complete (COMPLETED or FAILED)
-        if (execution.status === 'COMPLETED' || execution.status === 'FAILED') {
+        if (execution.status === JobExecutionStatus.COMPLETED || execution.status === JobExecutionStatus.FAILED) {
           const history = this.executionHistory();
           history.unshift(execution);
           this.executionHistory.set([...history]);

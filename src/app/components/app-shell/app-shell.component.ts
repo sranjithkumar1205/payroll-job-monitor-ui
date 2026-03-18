@@ -17,6 +17,9 @@ import { MatButtonModule } from '@angular/material/button';
 // Angular CDK (Component Dev Kit) - provides responsive breakpoint detection
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
+// Application constants
+import { APP_CONSTANTS } from '../../models/constants';
+
 /**
  * AppShellComponent - Main layout shell for the entire application
  * Provides responsive sidenav navigation that adapts to screen size
@@ -72,7 +75,7 @@ export class AppShellComponent implements OnInit {
    * Dynamically displays the current page title based on active route
    * Updates automatically when navigation occurs
    */
-  pageTitle = signal('Payroll Job Monitor');
+  pageTitle = signal<string>(APP_CONSTANTS.DEFAULT_PAGE_TITLE);
 
   /**
    * Constructor - runs effect to monitor sidenav state changes
@@ -122,7 +125,7 @@ export class AppShellComponent implements OnInit {
         } else if (url.includes('/dashboard')) {
           this.pageTitle.set('Dashboard');
         } else {
-          this.pageTitle.set('Payroll Job Monitor');
+          this.pageTitle.set(APP_CONSTANTS.DEFAULT_PAGE_TITLE);
         }
       });
   }

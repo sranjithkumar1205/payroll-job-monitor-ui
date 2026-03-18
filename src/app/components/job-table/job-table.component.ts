@@ -1,10 +1,11 @@
 /**
  * Table component showing the list of jobs with filtering and details.
  *
- * Includes search + status filter and opens a details dialog when a row is selected.
+ * Includes search + status filter, pagination, and opens a details dialog when a row is selected.
  */
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectionStrategy, inject, ViewChild } from '@angular/core';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,6 +19,7 @@ import { combineLatest, map, startWith } from 'rxjs';
 import { JobService } from '../../services/job.service';
 import { Job } from '../../models/job.model';
 import { JobDetailsComponent } from '../job-details/job-details.component';
+import { APP_CONSTANTS, JobStatus } from '../../models/constants';
 
 @Component({
   selector: 'app-job-table',
@@ -25,6 +27,7 @@ import { JobDetailsComponent } from '../job-details/job-details.component';
   imports: [
     DatePipe,
     MatTableModule,
+    MatPaginatorModule,
     MatChipsModule,
     MatButtonModule,
     MatIconModule,
@@ -38,7 +41,13 @@ import { JobDetailsComponent } from '../job-details/job-details.component';
   styleUrls: ['./job-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class JobTableComponent implements OnInit {
+export class JobTableComponent implements OnInit, AfterViewInit {
+  /**
+   * Template reference to the paginator component
+   * Allows programmatic control of pagination
+   */
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   // Columns displayed in the Material table
   displayedColumns: string[] = ['jobName', 'status', 'startTime', 'endTime', 'duration', 'actions'];
   dataSource = new MatTableDataSource<Job>();
@@ -47,12 +56,10 @@ export class JobTableComponent implements OnInit {
   searchControl = new FormControl('');
   statusControl = new FormControl('');
 
-  statusOptions = [
-    { value: '', label: 'All' },
-    { value: 'RUNNING', label: 'Running' },
-    { value: 'COMPLETED', label: 'Completed' },
-    { value: 'FAILED', label: 'Failed' }
-  ];
+  // Use constants for status options and pagination
+  statusOptions = APP_CONSTANTS.JOB_STATUS_OPTIONS;
+  pageSizeOptions = APP_CONSTANTS.PAGE_SIZE_OPTIONS;
+  defaultPageSize = APP_CONSTANTS.DEFAULT_PAGE_SIZE;
 
   private jobService = inject(JobService);
   private dialog = inject(MatDialog);
@@ -88,15 +95,19 @@ export class JobTableComponent implements OnInit {
   }
 
   /**
+   * Angular lifecycle hook - runs after view initialization
+   * Connects the paginator to the data source after the view is fully rendered
+   */
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+  }
+
+  /**
    * Map a status value to a color that matches the Material theme palette.
+   * Uses the constant color mappings from APP_CONSTANTS.
    */
   getStatusColor(status: string): string {
-    switch (status) {
-      case 'RUNNING': return 'accent';
-      case 'COMPLETED': return 'primary';
-      case 'FAILED': return 'warn';
-      default: return '';
-    }
+    return APP_CONSTANTS.STATUS_COLOR_MAP[status as JobStatus] || '';
   }
 
   /**

@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { DatePipe } from '@angular/common';
 
 import { JobExecution } from '../../models/job.model';
+import { APP_CONSTANTS, JobExecutionStatus } from '../../models/constants';
 
 @Component({
   selector: 'app-job-result',
@@ -33,11 +34,11 @@ export class JobResultComponent {
   getStatusColor(): string {
     const status = this.execution().status;
     switch (status) {
-      case 'RUNNING':
+      case JobExecutionStatus.RUNNING:
         return '#ff9800'; // orange
-      case 'COMPLETED':
+      case JobExecutionStatus.COMPLETED:
         return '#4caf50'; // green
-      case 'FAILED':
+      case JobExecutionStatus.FAILED:
         return '#f44336'; // red
       default:
         return '#9e9e9e'; // gray
@@ -47,11 +48,11 @@ export class JobResultComponent {
   getStatusIcon(): string {
     const status = this.execution().status;
     switch (status) {
-      case 'RUNNING':
+      case JobExecutionStatus.RUNNING:
         return 'hourglass_empty';
-      case 'COMPLETED':
+      case JobExecutionStatus.COMPLETED:
         return 'check_circle';
-      case 'FAILED':
+      case JobExecutionStatus.FAILED:
         return 'error';
       default:
         return 'help';
