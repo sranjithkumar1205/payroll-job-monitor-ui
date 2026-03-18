@@ -116,7 +116,6 @@ export class JobTriggerComponent {
       next: (execution) => {
         this.lastExecution.set(execution);
         console.log('execution', execution)
-        // Only add to history when execution is complete (COMPLETED or FAILED)
         if (execution.status === JobExecutionStatus.COMPLETED || execution.status === JobExecutionStatus.FAILED) {
           const history = this.executionHistory();
           history.unshift(execution);
