@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-03-18T18:00:00.000Z" agent="5.0" version="21.2.2" type="device">
+  <diagram id="technical-neon" name="Technical - Neon Dark Theme">
+    <mxGraphModel dx="1600" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1100" background="#0a0a0a" math="0" shadow="1">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        
+        <!-- Background -->
+        <mxCell id="bg" value="" style="fillColor=#0a0a0a;strokeColor=none;" parent="1" vertex="1">
+          <mxGeometry x="0" y="0" width="1400" height="1100" as="geometry"/>
+        </mxCell>
+        
+        <!-- Title -->
+        <mxCell id="title" value="PAYROLL JOB MONITOR - TECHNICAL COMPONENTS" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=18;fontColor=#00ffff;fontStyle=1;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="50" y="10" width="1300" height="35" as="geometry"/>
+        </mxCell>
+        
+        <!-- Subtitle -->
+        <mxCell id="subtitle" value="Component Class Diagram with Signals, Methods and RxJS Patterns" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;fontColor=#00ff88;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="50" y="45" width="1300" height="20" as="geometry"/>
+        </mxCell>
+        
+        <!-- Section Label: Component Classes -->
+        <mxCell id="components-label" value="===== COMPONENT CLASSES =====" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;fontColor=#ff00ff;fontStyle=1;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="50" y="75" width="1300" height="20" as="geometry"/>
+        </mxCell>
+        
+        <!-- AppShellComponent -->
+        <mxCell id="appshell-class" value="" style="shape=rectangle;fillColor=#1a1a2e;strokeColor=#ff00ff;strokeWidth=3;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="50" y="105" width="280" height="280" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="appshell-class-title" value="[CLASS] AppShellComponent" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=12;fontColor=#ff00ff;fontStyle=1;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="50" y="105" width="280" height="25" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="appshell-signals" value="Signals (WritableSignal):&#xa;- sidenavOpen: boolean&#xa;- isMobile: boolean&#xa;- pageTitle: string" style="shape=rectangle;fillColor=#0f1620;strokeColor=#ff1744;strokeWidth=1;rounded=1;fontSize=9;fontColor=#ff1744;align=left;verticalAlign=top;spacing=3;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="55" y="140" width="270" height="70" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="appshell-methods" value="Methods:&#xa;+ ngOnInit()&#xa;+ toggleSidenav()&#xa;+ updatePageTitle(title: string)&#xa;+ detectMobileView()" style="shape=rectangle;fillColor=#0f1620;strokeColor=#00ffff;strokeWidth=1;rounded=1;fontSize=9;fontColor=#00ffff;align=left;verticalAlign=top;spacing=2;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="55" y="220" width="270" height="80" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="appshell-deps" value="Dependencies:&#xa;- Router&#xa;- BreakpointObserver&#xa;- Angular Material" style="shape=rectangle;fillColor:#0f1620;strokeColor=#00ff88;strokeWidth=1;rounded=1;fontSize=9;fontColor=#00ff88;align=left;verticalAlign=top;spacing=2;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="55" y="310" width="270" height="65" as="geometry"/>
+        </mxCell>
+        
+        <!-- JobTriggerComponent -->
+        <mxCell id="jobtrigger-class" value="" style="shape=rectangle;fillColor:#1a1a2e;strokeColor=#ff00ff;strokeWidth=3;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="360" y="105" width="300" height="280" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="jobtrigger-class-title" value="[CLASS] JobTriggerComponent" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=12;fontColor=#ff00ff;fontStyle=1;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="360" y="105" width="300" height="25" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="jobtrigger-signals" value="Signals:&#xa;- jobTemplates: Template[]&#xa;- selectedFileName: string&#xa;- isExecuting: boolean&#xa;- lastExecution: JobExecution&#xa;- executionHistory: JobExecution[]" style="shape=rectangle;fillColor=#0f1620;strokeColor=#ff1744;strokeWidth=1;rounded=1;fontSize=8;fontColor=#ff1744;align=left;verticalAlign=top;spacing=2;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="365" y="140" width="290" height="75" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="jobtrigger-forms" value="Form Controls:&#xa;- jobTemplate (required)&#xa;- fileUpload (optional)&#xa;- executionNote (optional)" style="shape=rectangle;fillColor=#0f1620;strokeColor=#00d4ff;strokeWidth=1;rounded=1;fontSize=9;fontColor=#00d4ff;align=left;verticalAlign=top;spacing=2;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="365" y="225" width="290" height="65" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="jobtrigger-methods" value="Methods:&#xa;+ runJob()&#xa;+ onFileSelected()&#xa;+ clearHistory()" style="shape=rectangle;fillColor=#0f1620;strokeColor=#00ff88;strokeWidth=1;rounded=1;fontSize=9;fontColor=#00ff88;align=left;verticalAlign=top;spacing=2;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="365" y="300" width="290" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- JobTableComponent -->
+        <mxCell id="jobtable-class" value="" style="shape=rectangle;fillColor=#1a1a2e;strokeColor=#00ff88;strokeWidth=3;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="690" y="105" width="310" height="280" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="jobtable-class-title" value="[CLASS] JobTableComponent" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=12;fontColor=#00ff88;fontStyle=1;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="690" y="105" width="310" height="25" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="jobtable-refs" value="ViewChild References:&#xa;- @ViewChild MatPaginator&#xa;- @ViewChild MatSort&#xa;- @ViewChild MatTable" style="shape=rectangle;fillColor=#0f1620;strokeColor=#ff4081;strokeWidth=1;rounded=1;fontSize=9;fontColor=#ff4081;align=left;verticalAlign=top;spacing=2;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="695" y="140" width="300" height="60" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="jobtable-pagination" value="Pagination Config:&#xa;PAGE_SIZE_OPTIONS: [5,10,25,50]&#xa;DEFAULT_PAGE_SIZE: 10&#xa;FROM: APP_CONSTANTS" style="shape=rectangle;fillColor:#0f1620;strokeColor=#00ff88;strokeWidth=1;rounded=1;fontSize=8;fontColor=#00ff88;align=left;verticalAlign=top;spacing=2;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="695" y="210" width="300" height="60" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="jobtable-methods" value="Methods:&#xa;+ ngAfterViewInit()&#xa;+ onStatusFilterChange()&#xa;+ getStatusColor(status)&#xa;+ applyFilter(filterValue)" style="shape=rectangle;fillColor=#0f1620;strokeColor=#00ff88;strokeWidth=1;rounded=1;fontSize=8;fontColor=#00ff88;align=left;verticalAlign=top;spacing=2;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="695" y="280" width="300" height="62" as="geometry"/>
+        </mxCell>
+        
+        <!-- JobService Component -->
+        <mxCell id="jobservice-class" value="" style="shape=rectangle;fillColor=#1a1a2e;strokeColor=#00d4ff;strokeWidth=3;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="1030" y="105" width="300" height="280" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="jobservice-class-title" value="[SERVICE] JobService" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=12;fontColor=#00d4ff;fontStyle=1;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="1030" y="105" width="300" height="25" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="jobservice-subject" value="State Management:&#xa;- private jobsSubject: BehaviorSubject&#xa;- public jobs$: Observable" style="shape=rectangle;fillColor=#0f1620;strokeColor=#ff1744;strokeWidth=1;rounded=1;fontSize=9;fontColor=#ff1744;align=left;verticalAlign=top;spacing=2;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="1035" y="140" width="290" height="55" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="jobservice-methods" value="Core Methods:&#xa;+ getJobs(): Observable&#xa;+ triggerJob(job)&#xa;+ getJobDetails(id)&#xa;+ private startPolling()" style="shape=rectangle;fillColor=#0f1620;strokeColor=#00d4ff;strokeWidth=1;rounded=1;fontSize=8;fontColor=#00d4ff;align=left;verticalAlign=top;spacing=2;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="1035" y="205" width="290" height="70" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="jobservice-polling" value="Polling Pattern:&#xa;interval(5000ms) + switchMap()&#xa;Emits new jobs every 5 seconds" style="shape=rectangle;fillColor=#0f1620;strokeColor=#ff1744;strokeWidth=1;rounded=1;fontSize=9;fontColor=#ff1744;align=left;verticalAlign=top;spacing=2;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="1035" y="285" width="290" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- ENUMS SECTION -->
+        <mxCell id="enums-label" value="===== ENUMS and CONSTANTS =====" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;fontColor=#ff6600;fontStyle=1;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="50" y="405" width="1300" height="20" as="geometry"/>
+        </mxCell>
+        
+        <!-- JobStatus Enum -->
+        <mxCell id="jobstatus-enum" value="" style="shape=rectangle;fillColor:#1a1a2e;strokeColor=#ff6600;strokeWidth=2;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="50" y="435" width="210" height="130" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="jobstatus-enum-title" value="[ENUM] JobStatus" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;fontColor=#ff6600;fontStyle=1;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="50" y="435" width="210" height="25" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="jobstatus-enum-values" value="RUNNING = 'RUNNING'&#xa;COMPLETED = 'COMPLETED'&#xa;FAILED = 'FAILED'" style="shape=rectangle;fillColor=#0f1620;strokeColor=#ff6600;strokeWidth=1;rounded=1;fontSize=9;fontColor=#ff6600;align=center;verticalAlign=middle;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="55" y="470" width="200" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- JobExecutionStatus Enum -->
+        <mxCell id="jobexecstatus-enum" value="" style="shape=rectangle;fillColor:#1a1a2e;strokeColor:#ff6600;strokeWidth=2;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="280" y="435" width="240" height="130" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="jobexecstatus-enum-title" value="[ENUM] JobExecutionStatus" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;fontColor=#ff6600;fontStyle=1;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="280" y="435" width="240" height="25" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="jobexecstatus-enum-values" value="STARTING = 0&#xa;RUNNING = 1&#xa;COMPLETED = 2&#xa;FAILED = 3" style="shape=rectangle;fillColor=#0f1620;strokeColor=#ff6600;strokeWidth=1;rounded=1;fontSize=9;fontColor=#ff6600;align=center;verticalAlign=middle;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="285" y="470" width="230" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- APP_CONSTANTS -->
+        <mxCell id="constants-box" value="" style="shape=rectangle;fillColor:#1a1a2e;strokeColor:#ff6600;strokeWidth=2;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="540" y="435" width="310" height="130" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="constants-title" value="[CONST] APP_CONSTANTS" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;fontColor=#ff6600;fontStyle=1;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="540" y="435" width="310" height="25" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="constants-values" value="DEFAULT_PAGE_SIZE = 10&#xa;PAGE_SIZE_OPTIONS = [5,10,25,50]&#xa;DEFAULT_PAGE_TITLE = 'Job Monitor'&#xa;JOB_STATUS_OPTIONS: StatusOption[]&#xa;STATUS_COLOR_MAP: Map&lt;Status, Color&gt;&#xa;EMPTY_STATE_MESSAGE: string" style="shape=rectangle;fillColor=#0f1620;strokeColor=#ff6600;strokeWidth=1;rounded=1;fontSize=8;fontColor=#ff6600;align=left;verticalAlign=top;spacing=1;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="545" y="470" width="300" height="75" as="geometry"/>
+        </mxCell>
+        
+        <!-- STATUS_COLOR_MAP -->
+        <mxCell id="colormap-box" value="" style="shape=rectangle;fillColor:#1a1a2e;strokeColor=#ffea00;strokeWidth=2;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="870" y="435" width="220" height="130" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="colormap-title" value="[MAP] STATUS_COLOR_MAP" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;fontColor=#ffea00;fontStyle=1;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="870" y="435" width="220" height="25" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="colormap-values" value="RUNNING: '#ff9800'&#xa;COMPLETED: '#4caf50'&#xa;FAILED: '#f44336'&#xa;STARTING: '#2196f3'" style="shape=rectangle;fillColor=#0f1620;strokeColor=#ffea00;strokeWidth=1;rounded=1;fontSize=9;fontColor=#ffea00;align=center;verticalAlign=middle;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="875" y="470" width="210" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- DATA MODELS -->
+        <mxCell id="models-label" value="===== DATA MODELS =====" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;fontColor=#00ffff;fontStyle=1;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="50" y="585" width="1300" height="20" as="geometry"/>
+        </mxCell>
+        
+        <!-- Job Interface -->
+        <mxCell id="job-interface" value="" style="shape=rectangle;fillColor=#1a1a2e;strokeColor=#00ffff;strokeWidth=2;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="50" y="615" width="280" height="130" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="job-interface-title" value="[INTERFACE] Job" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;fontColor=#00ffff;fontStyle=1;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="50" y="615" width="280" height="25" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="job-interface-props" value="Properties:&#xa;id: string&#xa;name: string&#xa;status: JobStatus&#xa;createdAt: Date&#xa;updatedAt: Date&#xa;lastExecution: JobExecution" style="shape=rectangle;fillColor=#0f1620;strokeColor=#00ffff;strokeWidth=1;rounded=1;fontSize=8;fontColor=#00ffff;align=left;verticalAlign=top;spacing=1;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="55" y="650" width="270" height="90" as="geometry"/>
+        </mxCell>
+        
+        <!-- JobExecution Interface -->
+        <mxCell id="jobexec-interface" value="" style="shape=rectangle;fillColor=#1a1a2e;strokeColor=#00ffff;strokeWidth=2;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="360" y="615" width="310" height="130" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="jobexec-interface-title" value="[INTERFACE] JobExecution" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;fontColor=#00ffff;fontStyle=1;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="360" y="615" width="310" height="25" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="jobexec-interface-props" value="Properties:&#xa;id: string&#xa;jobId: string&#xa;status: JobExecutionStatus&#xa;startTime: Date&#xa;endTime: Date&#xa;result: any&#xa;error: string&#xa;fileName: string" style="shape=rectangle;fillColor=#0f1620;strokeColor=#00ffff;strokeWidth=1;rounded=1;fontSize=8;fontColor=#00ffff;align=left;verticalAlign=top;spacing=1;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="365" y="650" width="300" height="90" as="geometry"/>
+        </mxCell>
+        
+        <!-- INFO BOX -->
+        <mxCell id="info-box" value="Build Status: TypeScript Compilation OK | npm run build: 176.59 kB + 118.96 kB styles | All Components: Type-Safe with Enums and Constants" style="shape=rectangle;fillColor=#0a3a0a;strokeColor=#00ff88;strokeWidth=2;rounded=1;fontSize=9;fontColor=#00ff88;align=center;verticalAlign=middle;fontFamily=Courier New;" parent="1" vertex="1">
+          <mxGeometry x="50" y="770" width="1300" height="50" as="geometry"/>
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
