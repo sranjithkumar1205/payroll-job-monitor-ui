@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Job Details</h2>
+<h2 mat-dialog-title>Job Execution Details</h2>
 <mat-dialog-content>
   <div class="detail-item">
     <strong>Job Name:</strong> {{ job.jobName }}
@@ -15,13 +15,15 @@
   <div class="detail-item">
     <strong>End Time:</strong> {{ job.endTime ? (job.endTime | date:'medium') : 'N/A' }}
   </div>
+  @if (job.message) {
   <div class="detail-item">
-    <strong>Duration:</strong> {{ formatDuration(job.duration) }}
+    <strong>Message:</strong> {{ job.message }}
   </div>
-  @if (job.errorMessage) {
-    <div class="detail-item">
-      <strong>Error Message:</strong> {{ job.errorMessage }}
-    </div>
+  }
+  @if (job.fileName) {
+  <div class="detail-item">
+    <strong>File Name:</strong> {{ job.fileName }}
+  </div>
   }
 </mat-dialog-content>
 <mat-dialog-actions align="end">

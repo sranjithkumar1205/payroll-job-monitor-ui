@@ -3,12 +3,12 @@ import { DatePipe } from '@angular/common';
 import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
-import { Job } from '../../models/job.model';
+import { JobExecution } from '../../models/job.model';
 
 /**
- * Dialog component used to display full details for a selected job.
+ * Dialog component used to display full details for a selected job execution.
  *
- * The job instance is passed in via the MatDialog data injection token.
+ * The job execution instance is passed in via the MatDialog data injection token.
  */
 @Component({
   selector: 'app-job-details',
@@ -25,10 +25,10 @@ import { Job } from '../../models/job.model';
 })
 export class JobDetailsComponent {
   /**
-   * Job details are injected via MAT_DIALOG_DATA.
-   * This makes the component reusable for any job details dialog.
+   * Job execution details are injected via MAT_DIALOG_DATA.
+   * This makes the component reusable for any job execution details dialog.
    */
-  constructor(@Inject(MAT_DIALOG_DATA) public job: Job) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public job: JobExecution) { }
 
   /**
    * Convert a job status into a Material palette color.
@@ -36,21 +36,11 @@ export class JobDetailsComponent {
    */
   getStatusColor(status: string): string {
     switch (status) {
+      case 'STARTING': return 'accent';
       case 'RUNNING': return 'accent';
       case 'COMPLETED': return 'primary';
       case 'FAILED': return 'warn';
       default: return '';
     }
-  }
-
-  /**
-   * Converts a duration (milliseconds) into a human-friendly string.
-   * If the duration is missing, it returns 'N/A'.
-   */
-  formatDuration(duration?: number): string {
-    if (!duration) return 'N/A';
-    const minutes = Math.floor(duration / (1000 * 60));
-    const seconds = Math.floor((duration % (1000 * 60)) / 1000);
-    return `${minutes}m ${seconds}s`;
   }
 }

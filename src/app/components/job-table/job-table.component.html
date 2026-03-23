@@ -1,4 +1,11 @@
 <div class="table-container">
+  <!-- ============================================================
+       FILTERS
+       searchControl  : reactive FormControl — client-side substring match
+       statusControl  : reactive FormControl — exact status match
+       Both controls reset currentPage to 0 on every change so users
+       always see results from the beginning of the filtered set.
+  ============================================================ -->
   <div class="filters">
     <mat-form-field appearance="outline">
       <mat-label>Search by Job Name</mat-label>
@@ -16,8 +23,57 @@
         }
       </mat-select>
     </mat-form-field>
+
+    <!-- Sort Controls
+         sortBy  : field name forwarded to the backend `sortBy` query param
+         sortDir : 'asc' or 'desc' forwarded to the backend `sortDir` query param
+         Both controls also reset currentPage to 0 on change.
+    -->
+    <div class="sort-controls">
+      <mat-form-field appearance="outline">
+        <mat-label>Sort by</mat-label>
+        <mat-select [value]="sortBy()" (selectionChange)="onSortFieldChange($event.value)">
+          <mat-option value="startTime">Start Time</mat-option>
+          <mat-option value="jobName">Job Name</mat-option>
+          <mat-option value="status">Status</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-icon-button [matMenuTriggerFor]="sortMenu" matTooltip="Sort Direction">
+        <mat-icon>{{ sortDir() === 'desc' ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
+      </button>
+      <mat-menu #sortMenu="matMenu">
+        <button mat-menu-item (click)="onSortChange('desc')">
+          <mat-icon>arrow_downward</mat-icon>
+          <span>Descending</span>
+        </button>
+        <button mat-menu-item (click)="onSortChange('asc')">
+          <mat-icon>arrow_upward</mat-icon>
+          <span>Ascending</span>
+        </button>
+      </mat-menu>
+    </div>
   </div>
 
+  <!-- Loading State -->
+  @if (isLoading()) {
+  <div class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading jobs...</p>
+  </div>
+  }
+
+  <!-- Empty State -->
+  @if (!isLoading() && isEmpty()) {
+  <div class="empty-state">
+    <mat-icon>inbox</mat-icon>
+    <h3>No jobs found</h3>
+    <p>No jobs match your current filters or there are no jobs available yet.</p>
+  </div>
+  }
+
+  <!-- Table -->
+  @if (!isLoading() && !isEmpty()) {
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
     <ng-container matColumnDef="jobName">
       <th mat-header-cell *matHeaderCellDef>Job Name</th>
@@ -43,9 +99,9 @@
       <td mat-cell *matCellDef="let job">{{ job.endTime ? (job.endTime | date:'short') : '-' }}</td>
     </ng-container>
 
-    <ng-container matColumnDef="duration">
-      <th mat-header-cell *matHeaderCellDef>Duration</th>
-      <td mat-cell *matCellDef="let job">{{ formatDuration(job.duration) }}</td>
+    <ng-container matColumnDef="message">
+      <th mat-header-cell *matHeaderCellDef>Message</th>
+      <td mat-cell *matCellDef="let job">{{ job.message || '-' }}</td>
     </ng-container>
 
     <ng-container matColumnDef="actions">
@@ -61,8 +117,16 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
-  <!-- Paginator -->
-  <mat-paginator #paginator [length]="dataSource.filteredData.length" [pageSize]="defaultPageSize"
-    [pageSizeOptions]="pageSizeOptions" showFirstLastButtons>
+  <!-- Paginator
+       [length]          : total record count from the backend (drives page count display)
+       [pageSize]        : current rows-per-page value (kept in sync with pageSize signal)
+       [pageSizeOptions] : choices rendered in the page-size dropdown (from APP_CONSTANTS)
+       [pageIndex]       : current zero-based page index (kept in sync with currentPage signal)
+       (page)            : emits PageEvent on every navigation; handled by onPageChange()
+       showFirstLastButtons : adds "|<" and ">|" navigation buttons for quick jump
+  -->
+  <mat-paginator [length]="totalElements()" [pageSize]="pageSize()" [pageSizeOptions]="pageSizeOptions"
+    [pageIndex]="currentPage()" (page)="onPageChange($event)" showFirstLastButtons>
   </mat-paginator>
+  }
 </div>

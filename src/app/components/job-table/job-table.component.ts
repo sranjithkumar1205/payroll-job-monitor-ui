@@ -3,9 +3,9 @@
  *
  * Includes search + status filter, pagination, and opens a details dialog when a row is selected.
  */
-import { Component, OnInit, AfterViewInit, ChangeDetectionStrategy, inject, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, signal, effect } from '@angular/core';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,11 +13,16 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import { combineLatest, map, startWith } from 'rxjs';
+import { startWith } from 'rxjs';
 import { JobService } from '../../services/job.service';
-import { Job } from '../../models/job.model';
+import { JobExecution } from '../../models/job.model';
+import { Page } from '../../models/page.model';
 import { JobDetailsComponent } from '../job-details/job-details.component';
 import { APP_CONSTANTS, JobStatus } from '../../models/constants';
 
@@ -25,6 +30,7 @@ import { APP_CONSTANTS, JobStatus } from '../../models/constants';
   selector: 'app-job-table',
   standalone: true,
   imports: [
+    CommonModule,
     DatePipe,
     MatTableModule,
     MatPaginatorModule,
@@ -35,95 +41,211 @@ import { APP_CONSTANTS, JobStatus } from '../../models/constants';
     MatSelectModule,
     MatFormFieldModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
+    MatMenuModule,
+    MatTooltipModule,
     ReactiveFormsModule
   ],
   templateUrl: './job-table.component.html',
   styleUrls: ['./job-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class JobTableComponent implements OnInit, AfterViewInit {
-  /**
-   * Template reference to the paginator component
-   * Allows programmatic control of pagination
-   */
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+export class JobTableComponent implements OnInit {
+  // Columns rendered by the Material table in left-to-right order.
+  displayedColumns: string[] = ['jobName', 'status', 'startTime', 'endTime', 'message', 'actions'];
 
-  // Columns displayed in the Material table
-  displayedColumns: string[] = ['jobName', 'status', 'startTime', 'endTime', 'duration', 'actions'];
-  dataSource = new MatTableDataSource<Job>();
+  // MatTableDataSource holds the currently visible (post-filter) rows.
+  dataSource = new MatTableDataSource<JobExecution>();
 
-  // Form controls used for filtering
+  // Reactive form controls for the search box and status dropdown filters.
+  // Changes trigger a page-reset so users always see results from page 0.
   searchControl = new FormControl('');
   statusControl = new FormControl('');
 
-  // Use constants for status options and pagination
+  // Populated from APP_CONSTANTS so page-size options stay consistent app-wide.
   statusOptions = APP_CONSTANTS.JOB_STATUS_OPTIONS;
-  pageSizeOptions = APP_CONSTANTS.PAGE_SIZE_OPTIONS;
-  defaultPageSize = APP_CONSTANTS.DEFAULT_PAGE_SIZE;
+  pageSizeOptions = APP_CONSTANTS.PAGE_SIZE_OPTIONS; // e.g. [5, 10, 25, 50]
+  defaultPageSize = APP_CONSTANTS.DEFAULT_PAGE_SIZE; // 10
+
+  // --- Pagination & Sort signals ---
+  // All four signals are consumed by the `effect()` in the constructor so that
+  // any change to any of them automatically triggers a fresh HTTP request.
+
+  /** Zero-based page index sent to the backend. Updated by MatPaginator events. */
+  currentPage = signal(0);
+
+  /**
+   * Number of rows per page sent to the backend.
+   * Typed as `number` explicitly to prevent TypeScript inferring the literal type
+   * `10`, which would cause a TS2345 error when MatPaginator assigns a different
+   * page-size value at runtime.
+   */
+  pageSize = signal<number>(this.defaultPageSize);
+
+  /** Total record count returned by the backend; drives the paginator length. */
+  totalElements = signal(0);
+
+  /** Backend field name to sort by. Defaults to most-recent-first ordering. */
+  sortBy = signal('startTime');
+
+  /** Sort direction forwarded to the backend query string. */
+  sortDir = signal<'asc' | 'desc'>('desc');
+
+  // --- UI state signals ---
+  /** True while the HTTP request is in-flight; shows a spinner in the template. */
+  isLoading = signal(false);
+
+  /** True when the backend returns zero results; shows the empty-state message. */
+  isEmpty = signal(false);
 
   private jobService = inject(JobService);
   private dialog = inject(MatDialog);
 
+  constructor() {
+    /**
+     * Reactive effect — Angular signals equivalent of a computed side-effect.
+     * Runs once on construction, then re-runs automatically whenever any of
+     * the four pagination/sort signals change their value.
+     * This keeps UI state and the backend query in sync without manual subscriptions.
+     */
+    effect(() => {
+      this.loadJobs(
+        this.currentPage(),
+        this.pageSize(),
+        this.sortBy(),
+        this.sortDir()
+      );
+    });
+  }
+
   ngOnInit() {
-    // Combine the latest values from the job stream and the filter controls
-    const jobs$ = this.jobService.getJobs();
-    const search$ = this.searchControl.valueChanges.pipe(startWith(''));
-    const status$ = this.statusControl.valueChanges.pipe(startWith(''));
+    /**
+     * Filter change listeners — reset to page 0 on every search or status change.
+     * `startWith('')` ensures the subscription fires immediately on component init
+     * so the initial empty-string value is processed the same way as user input.
+     * Resetting `currentPage` to 0 is enough to re-trigger the effect above.
+     */
+    this.searchControl.valueChanges.pipe(
+      startWith('')
+    ).subscribe(() => {
+      this.currentPage.set(0);
+    });
 
-    // Whenever any of the inputs change, recalculate the filtered set.
-    combineLatest([jobs$, search$, status$]).pipe(
-      map(([jobs, search, status]) => {
-        let filtered = jobs;
+    this.statusControl.valueChanges.pipe(
+      startWith('')
+    ).subscribe(() => {
+      this.currentPage.set(0);
+    });
+  }
 
-        // Filter by job name (case-insensitive)
+  /**
+   * Loads a single page of jobs from the backend via JobService.
+   *
+   * Called automatically by the constructor `effect()` whenever `currentPage`,
+   * `pageSize`, `sortBy`, or `sortDir` signals change.
+   *
+   * Flow:
+   *   1. Set `isLoading` → spinner appears in template.
+   *   2. HTTP GET to backend with pagination/sort query params.
+   *   3. On success: update `totalElements` (drives paginator length),
+   *      apply local client-side filters, populate `dataSource`.
+   *   4. On error: hide spinner and show empty-state.
+   */
+  private loadJobs(page: number, size: number, sortBy: string, sortDir: 'asc' | 'desc'): void {
+    this.isLoading.set(true);
+
+    this.jobService.getJobs(page, size, sortBy, sortDir).subscribe({
+      next: (response: Page<JobExecution>) => {
+        // `totalElements` is the FULL record count across all pages,
+        // not just the count of items on this page.
+        this.totalElements.set(response.totalElements);
+
+        // Mark empty when the backend reports 0 records (covers both
+        // `response.empty` flag and guard against missing metadata).
+        this.isEmpty.set(response.empty || response.totalElements === 0);
+
+        // Client-side filtering is applied on top of the server-side page.
+        // This lets users narrow results further without extra round-trips.
+        let filtered = response.content;
+
+        // Text search: case-insensitive substring match on the job name.
+        const search = this.searchControl.value || '';
         if (search) {
           filtered = filtered.filter(job =>
             job.jobName.toLowerCase().includes(search.toLowerCase())
           );
         }
 
-        // Filter by job status
+        // Status filter: exact match — empty string means "show all statuses".
+        const status = this.statusControl.value || '';
         if (status) {
           filtered = filtered.filter(job => job.status === status);
         }
 
-        return filtered;
-      })
-    ).subscribe(filteredJobs => {
-      this.dataSource.data = filteredJobs;
+        // Push filtered rows into MatTableDataSource; Angular renders them automatically.
+        this.dataSource.data = filtered;
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        // Log full error for debugging; show empty-state UI instead of crashing.
+        console.error('Error loading jobs:', err);
+        this.isLoading.set(false);
+        this.isEmpty.set(true);
+      }
     });
   }
 
   /**
-   * Angular lifecycle hook - runs after view initialization
-   * Connects the paginator to the data source after the view is fully rendered
+   * Handles `(page)` events emitted by MatPaginator.
+   *
+   * MatPaginator emits a `PageEvent` containing the new page index and page size
+   * whenever the user clicks a page number, next/prev, or changes the page-size
+   * selector.  Updating both signals triggers the reactive `effect()` which
+   * automatically calls `loadJobs()` with the new values.
    */
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
+  onPageChange(event: PageEvent): void {
+    this.currentPage.set(event.pageIndex); // zero-based page number
+    this.pageSize.set(event.pageSize);     // rows per page chosen by the user
   }
 
   /**
-   * Map a status value to a color that matches the Material theme palette.
-   * Uses the constant color mappings from APP_CONSTANTS.
+   * Handles sort direction changes from the sort-direction menu.
+   *
+   * Resets to page 0 first so the user always sees the beginning of the
+   * newly sorted result set rather than an arbitrary middle page.
+   */
+  onSortChange(direction: 'asc' | 'desc'): void {
+    this.currentPage.set(0);      // return to first page on re-sort
+    this.sortDir.set(direction);  // 'asc' or 'desc' forwarded to backend
+  }
+
+  /**
+   * Handles sort field changes from the sort-by dropdown.
+   *
+   * Like `onSortChange`, resets to page 0 to avoid confusing off-page results.
+   */
+  onSortFieldChange(field: string): void {
+    this.currentPage.set(0); // return to first page on field change
+    this.sortBy.set(field);  // e.g. 'startTime', 'jobName', 'status'
+  }
+
+  /**
+   * Maps a job status string to the corresponding Angular Material theme color.
+   *
+   * Returns one of: 'primary' (completed), 'accent' (running), 'warn' (failed).
+   * Falls back to an empty string for unknown statuses so no color is applied.
    */
   getStatusColor(status: string): string {
     return APP_CONSTANTS.STATUS_COLOR_MAP[status as JobStatus] || '';
   }
 
   /**
-   * Human-friendly formatting for duration (milliseconds).
+   * Opens the Job Details dialog for the selected row.
+   *
+   * Passes the full `JobExecution` object as dialog data so JobDetailsComponent
+   * can render all available execution metadata without an additional HTTP call.
    */
-  formatDuration(duration?: number): string {
-    if (!duration) return '-';
-    const minutes = Math.floor(duration / (1000 * 60));
-    const seconds = Math.floor((duration % (1000 * 60)) / 1000);
-    return `${minutes}m ${seconds}s`;
-  }
-
-  /**
-   * Opens the Job Details dialog for the selected job.
-   */
-  openDetails(job: Job) {
+  openDetails(job: JobExecution) {
     this.dialog.open(JobDetailsComponent, {
       data: job,
       width: '500px'

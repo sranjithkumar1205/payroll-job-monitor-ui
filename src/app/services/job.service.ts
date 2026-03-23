@@ -1,60 +1,68 @@
 /**
  * Service responsible for retrieving job data and triggering manual jobs.
  *
- * Currently uses mock data, but is designed to be replaced with real HTTP
- * API calls in a future iteration.
+ * Makes HTTP API calls to the backend for job data and triggering.
  */
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, interval, startWith, switchMap, map, delay, tap, concat } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, of, delay, concat, map } from 'rxjs';
 import { Job, JobExecution } from '../models/job.model';
+import { Page } from '../models/page.model';
 import { mockJobs, jobTemplates } from '../mocks/mock-jobs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class JobService {
-  /**
-   * BehaviorSubject used to provide an observable stream of job updates.
-   */
-  private jobsSubject = new BehaviorSubject<Job[]>(mockJobs);
+  private readonly apiUrl = 'http://localhost:8080/api/jobs';
+
+  constructor(private http: HttpClient) { }
 
   /**
-   * Public observable consumers should subscribe to this property.
+   * Fetches a paginated list of jobs from the backend.
+   *
+   * Sends a GET request to `GET /api/jobs` with the following query parameters:
+   *   - `page`    — Zero-based page index (Spring convention)
+   *   - `size`    — Number of records per page
+   *   - `sortBy`  — Entity field name to sort results by
+   *   - `sortDir` — Direction: "asc" (oldest first) or "desc" (newest first)
+   *
+   * The backend is expected to return a Spring `Page<JobExecution>` JSON object
+   * containing `content[]`, `totalElements`, `totalPages`, `number`, `size`, etc.
+   *
+   * @param page    - Zero-based page index (default: 0)
+   * @param size    - Number of items per page (default: 10)
+   * @param sortBy  - Field to sort by (default: "startTime")
+   * @param sortDir - Sort direction "asc" or "desc" (default: "desc")
+   * @returns Observable<Page<JobExecution>> wrapping the paginated job data
    */
-  public jobs$ = this.jobsSubject.asObservable();
+  getJobs(
+    page: number = 0,
+    size: number = 10,
+    sortBy: string = 'startTime',
+    sortDir: 'asc' | 'desc' = 'desc'
+  ): Observable<Page<JobExecution>> {
+    // Build immutable HttpParams — each `.set()` returns a new instance.
+    // This produces a URL like: /api/jobs?page=0&size=10&sortBy=startTime&sortDir=desc
+    let params = new HttpParams()
+      .set('page', page.toString())    // zero-based page number
+      .set('size', size.toString())    // items per page
+      .set('sortBy', sortBy)           // sort field name
+      .set('sortDir', sortDir);        // 'asc' or 'desc'
 
-  constructor() {
-    // Auto refresh every 5 seconds using RxJS interval.
-    // This simulates a polling mechanism to keep the dashboard up-to-date.
-    interval(5000).pipe(
-      startWith(0),
-      switchMap(() => this.fetchJobs())
-    ).subscribe(jobs => this.jobsSubject.next(jobs));
-  }
-
-  /**
-   * Returns the current job stream (updates on refresh).
-   */
-  getJobs(): Observable<Job[]> {
-    return this.jobs$;
+    // Angular HttpClient automatically deserialises the JSON response body
+    // into the typed Page<JobExecution> shape.
+    return this.http.get<Page<JobExecution>>(this.apiUrl, { params });
   }
 
   /**
    * Returns a single job by ID (useful for details view).
    */
-  getJobById(id: string): Observable<Job | undefined> {
-    return this.jobs$.pipe(
-      map(jobs => jobs.find(job => job.id === id))
+  getJobById(id: string): Observable<JobExecution | undefined> {
+    return this.http.get<JobExecution>(`${this.apiUrl}/${id}`).pipe(
+      map(job => job),
+      // Catch errors gracefully and return undefined
     );
-  }
-
-  /**
-   * Fetches jobs from the data source.
-   * In the future this will become an HTTP call to /api/jobs.
-   */
-  private fetchJobs(): Observable<Job[]> {
-    // Mock data for now.
-    return of(mockJobs);
   }
 
   /**
