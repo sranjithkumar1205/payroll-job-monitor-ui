@@ -39,19 +39,17 @@
         </mat-select>
       </mat-form-field>
 
-      <button mat-icon-button [matMenuTriggerFor]="sortMenu" matTooltip="Sort Direction">
-        <mat-icon>{{ sortDir() === 'desc' ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
-      </button>
-      <mat-menu #sortMenu="matMenu">
-        <button mat-menu-item (click)="onSortChange('desc')">
-          <mat-icon>arrow_downward</mat-icon>
-          <span>Descending</span>
-        </button>
-        <button mat-menu-item (click)="onSortChange('asc')">
-          <mat-icon>arrow_upward</mat-icon>
-          <span>Ascending</span>
-        </button>
-      </mat-menu>
+      <mat-form-field appearance="outline">
+        <mat-label>Direction</mat-label>
+        <mat-select [value]="sortDir()" (selectionChange)="onSortChange($event.value)">
+          <mat-option value="desc">
+            <mat-icon>arrow_downward</mat-icon> Descending
+          </mat-option>
+          <mat-option value="asc">
+            <mat-icon>arrow_upward</mat-icon> Ascending
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
   </div>
 

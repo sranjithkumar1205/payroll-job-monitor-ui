@@ -7,7 +7,7 @@ import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/cor
 import { AsyncPipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { Observable, map } from 'rxjs';
+import { Observable, map, filter, shareReplay } from 'rxjs';
 import { JobService } from '../../services/job.service';
 import { JobExecution } from '../../models/job.model';
 import { Page } from '../../models/page.model';
@@ -33,12 +33,20 @@ export class JobSummaryComponent implements OnInit {
 
   ngOnInit() {
     /**
-     * Fetch the first page of jobs using default parameters (page=0, size=10).
-     * The summary cards only need aggregate counts, so one page is sufficient
-     * for a quick at-a-glance overview.  The stream is shared across all four
-     * derived Observables below via the single `jobs$` reference.
+     * Subscribe to the shared broadcast stream from JobService instead of
+     * calling getJobs() directly. This means job-summary never fires its own
+     * HTTP request — it reacts to the same response that job-table already
+     * fetched, eliminating duplicate API calls entirely.
+     *
+     * shareReplay(1) ensures all four derived Observables below share a single
+     * subscription to the upstream BehaviorSubject, preventing the async pipe
+     * from creating four independent subscriptions (which would otherwise each
+     * trigger the upstream cold Observable four times).
      */
-    const jobs$ = this.jobService.getJobs();
+    const jobs$ = this.jobService.latestPage$.pipe(
+      filter((page): page is Page<JobExecution> => page !== null),
+      shareReplay(1)
+    );
 
     // `totalElements` comes from the Spring Page metadata — it reflects the
     // TOTAL record count in the database, not just the count on this page.
@@ -47,8 +55,6 @@ export class JobSummaryComponent implements OnInit {
     );
 
     // Count RUNNING jobs from the current page's `content` array.
-    // Note: these counts reflect only the jobs returned on the first page;
-    // adjust the page size or add a dedicated summary endpoint for full accuracy.
     this.runningJobs$ = jobs$.pipe(
       map((page: Page<JobExecution>) =>
         page.content.filter((job: JobExecution) => job.status === 'RUNNING').length

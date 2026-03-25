@@ -5,7 +5,7 @@
  */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of, delay, concat, map } from 'rxjs';
+import { Observable, BehaviorSubject, of, delay, concat, map, tap } from 'rxjs';
 import { Job, JobExecution } from '../models/job.model';
 import { Page } from '../models/page.model';
 import { mockJobs, jobTemplates } from '../mocks/mock-jobs';
@@ -15,6 +15,15 @@ import { mockJobs, jobTemplates } from '../mocks/mock-jobs';
 })
 export class JobService {
   private readonly apiUrl = 'http://localhost:8080/api/jobs';
+
+  /**
+   * Shared broadcast of the most-recent getJobs() response.
+   * Starts as null (no data yet). job-table drives updates by calling getJobs();
+   * job-summary (and any other consumer) subscribes here instead of making
+   * its own HTTP request, which eliminates duplicate API calls.
+   */
+  private readonly _latestPage = new BehaviorSubject<Page<JobExecution> | null>(null);
+  readonly latestPage$ = this._latestPage.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -40,7 +49,9 @@ export class JobService {
     page: number = 0,
     size: number = 10,
     sortBy: string = 'startTime',
-    sortDir: 'asc' | 'desc' = 'desc'
+    sortDir: 'asc' | 'desc' = 'desc',
+    jobName: string = '',
+    status: string = ''
   ): Observable<Page<JobExecution>> {
     // Build immutable HttpParams — each `.set()` returns a new instance.
     // This produces a URL like: /api/jobs?page=0&size=10&sortBy=startTime&sortDir=desc
@@ -50,9 +61,22 @@ export class JobService {
       .set('sortBy', sortBy)           // sort field name
       .set('sortDir', sortDir);        // 'asc' or 'desc'
 
+    const trimmedJobName = jobName.trim();
+    if (trimmedJobName) {
+      params = params.set('jobName', trimmedJobName);
+    }
+
+    if (status) {
+      params = params.set('status', status);
+    }
+
     // Angular HttpClient automatically deserialises the JSON response body
     // into the typed Page<JobExecution> shape.
-    return this.http.get<Page<JobExecution>>(this.apiUrl, { params });
+    // tap() broadcasts every response through latestPage$ so all subscribers
+    // (e.g. job-summary) stay in sync without issuing their own HTTP call.
+    return this.http.get<Page<JobExecution>>(this.apiUrl, { params }).pipe(
+      tap(page => this._latestPage.next(page))
+    );
   }
 
   /**

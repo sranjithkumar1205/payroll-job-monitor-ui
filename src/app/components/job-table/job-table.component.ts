@@ -19,7 +19,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import { startWith } from 'rxjs';
+import { debounceTime, distinctUntilChanged, startWith } from 'rxjs';
 import { JobService } from '../../services/job.service';
 import { JobExecution } from '../../models/job.model';
 import { Page } from '../../models/page.model';
@@ -91,6 +91,12 @@ export class JobTableComponent implements OnInit {
   /** Sort direction forwarded to the backend query string. */
   sortDir = signal<'asc' | 'desc'>('desc');
 
+  /** Search term sent to the backend as jobName query parameter. */
+  searchTerm = signal('');
+
+  /** Selected status sent to the backend as status query parameter. */
+  statusFilter = signal('');
+
   // --- UI state signals ---
   /** True while the HTTP request is in-flight; shows a spinner in the template. */
   isLoading = signal(false);
@@ -113,7 +119,9 @@ export class JobTableComponent implements OnInit {
         this.currentPage(),
         this.pageSize(),
         this.sortBy(),
-        this.sortDir()
+        this.sortDir(),
+        this.searchTerm(),
+        this.statusFilter()
       );
     });
   }
@@ -126,14 +134,18 @@ export class JobTableComponent implements OnInit {
      * Resetting `currentPage` to 0 is enough to re-trigger the effect above.
      */
     this.searchControl.valueChanges.pipe(
-      startWith('')
-    ).subscribe(() => {
+      startWith(''),
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe((value) => {
+      this.searchTerm.set(value?.trim() ?? '');
       this.currentPage.set(0);
     });
 
     this.statusControl.valueChanges.pipe(
       startWith('')
-    ).subscribe(() => {
+    ).subscribe((value) => {
+      this.statusFilter.set(value ?? '');
       this.currentPage.set(0);
     });
   }
@@ -151,10 +163,17 @@ export class JobTableComponent implements OnInit {
    *      apply local client-side filters, populate `dataSource`.
    *   4. On error: hide spinner and show empty-state.
    */
-  private loadJobs(page: number, size: number, sortBy: string, sortDir: 'asc' | 'desc'): void {
+  private loadJobs(
+    page: number,
+    size: number,
+    sortBy: string,
+    sortDir: 'asc' | 'desc',
+    searchTerm: string,
+    status: string
+  ): void {
     this.isLoading.set(true);
 
-    this.jobService.getJobs(page, size, sortBy, sortDir).subscribe({
+    this.jobService.getJobs(page, size, sortBy, sortDir, searchTerm, status).subscribe({
       next: (response: Page<JobExecution>) => {
         // `totalElements` is the FULL record count across all pages,
         // not just the count of items on this page.
@@ -164,26 +183,8 @@ export class JobTableComponent implements OnInit {
         // `response.empty` flag and guard against missing metadata).
         this.isEmpty.set(response.empty || response.totalElements === 0);
 
-        // Client-side filtering is applied on top of the server-side page.
-        // This lets users narrow results further without extra round-trips.
-        let filtered = response.content;
-
-        // Text search: case-insensitive substring match on the job name.
-        const search = this.searchControl.value || '';
-        if (search) {
-          filtered = filtered.filter(job =>
-            job.jobName.toLowerCase().includes(search.toLowerCase())
-          );
-        }
-
-        // Status filter: exact match — empty string means "show all statuses".
-        const status = this.statusControl.value || '';
-        if (status) {
-          filtered = filtered.filter(job => job.status === status);
-        }
-
-        // Push filtered rows into MatTableDataSource; Angular renders them automatically.
-        this.dataSource.data = filtered;
+        // Backend now applies search/status filtering before pagination.
+        this.dataSource.data = response.content;
         this.isLoading.set(false);
       },
       error: (err) => {
